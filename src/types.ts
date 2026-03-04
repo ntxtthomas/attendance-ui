@@ -1,5 +1,5 @@
-export type EntryStatus = 'all' | 'present' | 'absent' | 'late' | 'excused';
-export type FilterStatus = 'all' | 'EntryStatus';
+export type EntryStatus = 'present' | 'absent' | 'late' | 'excused';
+export type FilterStatus = 'all' | EntryStatus;
 
 export interface AttendanceEntry {
   id: string;

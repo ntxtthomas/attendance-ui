@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { AttendanceEntry, EntryStatus } from '../types'; 
+import type { AttendanceEntry, EntryStatus, FilterStatus } from '../types'; 
 import AttendanceForm from '../components/AttendanceForm';  
 import AttendanceSummary from '../components/AttendanceSummary';
 
@@ -19,7 +19,7 @@ export default function AttendancePage() {
     ]);
   };
 
-  const [status, setStatus] = useState<EntryStatus>('all');
+  const [status, setStatus] = useState<FilterStatus>('all');
   const filteredEntries = entries.filter (e => status === 'all' || e.status === status);
 
   return (
