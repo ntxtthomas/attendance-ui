@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import type { AttendanceStatus } from '../types';
+import type { EntryStatus } from '../types';
 
 type Props = {
-    onSubmit: (studentName: string, status: AttendanceStatus) => void;
+    onSubmit: (studentName: string, status: EntryStatus) => void;
 };
 
 export default function AttendanceForm({ onSubmit }: Props) {
     const [studentName, setStudentName] = useState('');
-    const [status, setStatus] = useState<AttendanceStatus>('present');
+    const [status, setStatus] = useState<EntryStatus>('present');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -27,7 +27,7 @@ export default function AttendanceForm({ onSubmit }: Props) {
                 placeholder="Student Name"
                 required
             />
-            <select value={status} style={{ margin: '0 40px 20px 10px' }} onChange={(e) => setStatus(e.target.value as AttendanceStatus)}>
+            <select value={status} style={{ margin: '0 40px 20px 10px' }} onChange={(e) => setStatus(e.target.value as EntryStatus)}>
                 <option value="present">Present</option>
                 <option value="absent">Absent</option>
                 <option value="late">Late</option>

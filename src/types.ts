@@ -1,8 +1,9 @@
-export type AttendanceStatus = 'present' | 'absent' | 'late' | 'excused';
+export type EntryStatus = 'all' | 'present' | 'absent' | 'late' | 'excused';
+export type FilterStatus = 'all' | 'EntryStatus';
 
 export interface AttendanceEntry {
   id: string;
   studentName: string;
-  status: AttendanceStatus;
+  status: EntryStatus;
   recordedAt: string;
 }

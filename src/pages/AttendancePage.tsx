@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
-import type { AttendanceEntry, AttendanceStatus } from '../types'; 
+import { useState } from 'react';
+import type { AttendanceEntry, EntryStatus } from '../types'; 
 import AttendanceForm from '../components/AttendanceForm';  
+import AttendanceSummary from '../components/AttendanceSummary';
 
 const nowIso = () => new Date().toISOString();
 const id = () => crypto.randomUUID();
@@ -11,32 +12,38 @@ export default function AttendancePage() {
     {id: id(), studentName: 'Jane Doe', status: 'absent', recordedAt: nowIso()},
   ]);
 
-  const presentCount = useMemo(() => 
-    entries.filter(entry => entry.status === 'present').length, 
-    [entries]
-  );
-
-  const addEntry = (studentName: string, status: AttendanceStatus) => {
+  const addEntry = (studentName: string, status: EntryStatus) => {
     setEntries((prev) => [
       { id: id(), studentName, status, recordedAt: nowIso() },
       ...prev, 
     ]);
   };
 
+  const [status, setStatus] = useState<EntryStatus>('all');
+  const filteredEntries = entries.filter (e => status === 'all' || e.status === status);
+
   return (
     <div style={{ textAlign: 'center', padding: '20px' }}>
       <h1>Attendance Page</h1>
-      <p>Present Today: {presentCount}</p>
       <AttendanceForm onSubmit={addEntry} />
+      <AttendanceSummary entries={entries} />
       <button onClick={() => addEntry('New Student', 'present')}>
         Quick Add Present
       </button>
+      <br />
+      <select value={status} style={{ margin: '40px 40px 20px 10px' }} onChange={(e) => setStatus(e.target.value as EntryStatus)}>
+          <option value="all">All</option>
+          <option value="present">Present</option>
+          <option value="absent">Absent</option>
+          <option value="late">Late</option>
+          <option value="excused">Excused</option>
+      </select>
 
       <ul>
-        { entries.map((e) => (
+        { filteredEntries.map((e) => (
           <li key={e.id}>
             <strong>{e.studentName}</strong> - {e.status}{" "}
-            <small>{new Date(e.recordedAt).toLocaleTimeString()})</small>
+            <small>{new Date(e.recordedAt).toLocaleTimeString()}</small>
           </li>
         ))}
       </ul>
