@@ -6,4 +6,3 @@ export interface AttendanceEntry {
   status: AttendanceStatus;
   recordedAt: string;
 }
-export interface AttendancePageProps {
