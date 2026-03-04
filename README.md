@@ -1,73 +1,64 @@
-# React + TypeScript + Vite
+This is the UI for a simple Attendance Tracker with a Rails-API backend and a React/TypeScript front end.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+I'm building this end-to-end project under a time constraint that loosely reflects production pace. At about 2-3 hours a day over the next few weeks. I'm following the roadmap below;
 
-Currently, two official plugins are available:
+Core React Fluency
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Focus only on:
+• Functional components
+• useState
+• useEffect
+• Props
+• Lifting state
+• Controlled forms
+• Fetching data from an API
 
-## React Compiler
+Deliverable:
+Build a small standalone React frontend that:
+• Lists records from a Rails API
+• Creates a record
+• Edits a record
+• Deletes a record
+• Handles loading + error states
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+Week 1–2 - Build a small but real Rails + React app.
 
-## Expanding the ESLint configuration
+Example:
+• Attendance tracker
+• CRUD records
+• Authentication
+• Simple dashboard
+• API calls from React to Rails
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Focus on:
+• Fetch data
+• Handle loading states
+• Handle errors
+• Write 5–10 tests
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Week 3 - Refactor and improve:
+• Component structure
+• Extract reusable components
+• Improve form handling
+• Add basic client-side validation
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Focus on:
+• Refactoring React components
+• Extracting reusable components
+• Memoization where appropriate
+• Improving folder structure
+• Cleaning Rails service objects
+• N+1 avoidance
+• SQL optimization review
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Add:
+• Docker
+• Basic CI
+• README explaining architecture decisions
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Week 4 - Polish + deploy:
+• Dockerize
+• Deploy to something simple
+• Write README
+• Add tests
+• Add basic CI
