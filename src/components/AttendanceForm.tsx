@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { SubmitEvent, ChangeEvent } from 'react';
 import type { EntryStatus } from '../types';
 
 type Props = {
@@ -8,14 +9,26 @@ type Props = {
 export default function AttendanceForm({ onSubmit }: Props) {
     const [studentName, setStudentName] = useState('');
     const [status, setStatus] = useState<EntryStatus>('present');
+    const [error, setError] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
+        
         const trimmedName = studentName.trim();
-        if (!trimmedName) return;
-        onSubmit(studentName, status);
+        if (!trimmedName) {
+            setError('Student name is required');
+            return;
+        }
+
+        setError('');
+        onSubmit(trimmedName, status);
         setStudentName('');
         setStatus('present');
+    };
+
+    const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setStudentName(e.target.value);
+        if (error) setError('');
     };
 
     return (
@@ -23,11 +36,14 @@ export default function AttendanceForm({ onSubmit }: Props) {
             <input
                 type="text"
                 value={studentName}
-                onChange={(e) => setStudentName(e.target.value)}
+                onChange={handleNameChange}
                 placeholder="Student Name"
                 required
             />
-            <select value={status} style={{ margin: '0 40px 20px 10px' }} onChange={(e) => setStatus(e.target.value as EntryStatus)}>
+            {error && <span style={{ color: 'red', marginLeft: '10px' }}>{error}</span>}
+            
+            <select value={status} style={{ margin: '0 40px 20px 10px' }} onChange={(e: ChangeEvent<HTMLSelectElement>) => 
+                setStatus(e.target.value as EntryStatus)}>
                 <option value="present">Present</option>
                 <option value="absent">Absent</option>
                 <option value="late">Late</option>
