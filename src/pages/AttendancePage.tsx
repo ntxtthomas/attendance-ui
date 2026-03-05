@@ -1,16 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { AttendanceEntry, EntryStatus, FilterStatus } from '../types'; 
 import AttendanceForm from '../components/AttendanceForm';  
 import AttendanceSummary from '../components/AttendanceSummary';
+import { attendanceApi } from '../api/attendanceApi';
 
 const nowIso = () => new Date().toISOString();
 const id = () => crypto.randomUUID();
 
 export default function AttendancePage() {
-  const [entries, setEntries] = useState<AttendanceEntry[]>([
-    {id: id(), studentName: 'John Doe', status: 'present', recordedAt: nowIso()},
-    {id: id(), studentName: 'Jane Doe', status: 'absent', recordedAt: nowIso()},
-  ]);
+  const [entries, setEntries] = useState<AttendanceEntry[]>([]);
+  useEffect(() => {
+    attendanceApi.listEntries().then(setEntries);
+  }, []);
 
   const addEntry = (studentName: string, status: EntryStatus) => {
     setEntries((prev) => [
