@@ -9,9 +9,23 @@ const id = () => crypto.randomUUID();
 
 export default function AttendancePage() {
   const [entries, setEntries] = useState<AttendanceEntry[]>([]);
-  useEffect(() => {
-    attendanceApi.listEntries().then(setEntries);
-  }, []);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => { loadEntries(); }, []);
+
+  const loadEntries = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await attendanceApi.listEntries();
+      setEntries(data);
+    } catch {
+      setError('An unexpected error occurred');
+    } finally { 
+      setIsLoading(false);
+      }
+  };
 
   const addEntry = (studentName: string, status: EntryStatus) => {
     setEntries((prev) => [
@@ -26,13 +40,16 @@ export default function AttendancePage() {
   return (
     <div style={{ textAlign: 'center', padding: '20px' }}>
       <h1>Attendance Page</h1>
+      {isLoading && <p>Loading...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>
+      && <button onClick={loadEntries}>Reload</button> }
       <AttendanceForm onSubmit={addEntry} />
       <AttendanceSummary entries={entries} />
       <button onClick={() => addEntry('New Student', 'present')}>
         Quick Add Present
       </button>
       <br />
-      <select value={status} style={{ margin: '40px 40px 20px 10px' }} onChange={(e) => setStatus(e.target.value as EntryStatus)}>
+      <select value={status} style={{ margin: '20px 20px 20px 10px' }} onChange={(e) => setStatus(e.target.value as FilterStatus)}>
           <option value="all">All</option>
           <option value="present">Present</option>
           <option value="absent">Absent</option>
@@ -41,12 +58,15 @@ export default function AttendancePage() {
       </select>
 
       <ul>
-        { filteredEntries.map((e) => (
-          <li key={e.id}>
-            <strong>{e.studentName}</strong> - {e.status}{" "}
-            <small>{new Date(e.recordedAt).toLocaleTimeString()}</small>
+        {filteredEntries.length === 0 ? (
+          <p>No entries to display</p>
+        ) : (
+          filteredEntries.map((e) => (
+            <li key={e.id}>
+              <strong>{e.studentName}</strong> - {e.status}{" "}
+              <small>{new Date(e.recordedAt).toLocaleTimeString()}</small>
           </li>
-        ))}
+        )))}
       </ul>
     </div>
   );

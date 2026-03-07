@@ -23,6 +23,18 @@
       "studentName": "Bob Johnson",
       "status": "late",
       "recordedAt": "2026-03-05T13:00:00Z"
+    },
+    {
+      "id": "5",
+      "studentName": "Charlie Brown",
+      "status": "present",
+      "recordedAt": "2026-03-05T14:00:00Z"
+    }, 
+    {
+      "id": "6",
+      "studentName": "Diana Prince",
+      "status": "excused",
+      "recordedAt": "2026-03-05T15:00:00Z"
     }
   ]
 }

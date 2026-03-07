@@ -42,7 +42,7 @@ export default function AttendanceForm({ onSubmit }: Props) {
             />
             {error && <span style={{ color: 'red', marginLeft: '10px' }}>{error}</span>}
             
-            <select value={status} style={{ margin: '0 40px 20px 10px' }} onChange={(e: ChangeEvent<HTMLSelectElement>) => 
+            <select value={status} style={{ margin: '0 20px 20px 10px' }} onChange={(e: ChangeEvent<HTMLSelectElement>) => 
                 setStatus(e.target.value as EntryStatus)}>
                 <option value="present">Present</option>
                 <option value="absent">Absent</option>
