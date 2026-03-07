@@ -12,8 +12,6 @@ export default function AttendancePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => { loadEntries(); }, []);
-
   const loadEntries = async () => {
     setIsLoading(true);
     setError(null);
@@ -27,6 +25,8 @@ export default function AttendancePage() {
       }
   };
 
+  useEffect(() => { loadEntries(); }, []);
+
   const addEntry = (studentName: string, status: EntryStatus) => {
     setEntries((prev) => [
       { id: id(), studentName, status, recordedAt: nowIso() },
@@ -37,17 +37,39 @@ export default function AttendancePage() {
   const [status, setStatus] = useState<FilterStatus>('all');
   const filteredEntries = entries.filter (e => status === 'all' || e.status === status);
 
+  if (isLoading) {
+    return (
+      <div style={{ textAlign: 'center', padding: '20px' }}>
+        <h1>Attendance Page</h1>
+        <p>Loading attendance...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ textAlign: 'center', padding: '20px' }}>
+        <h1>Attendance Page</h1>
+        <p style={{ color: 'red' }}>{error}</p>
+        <button onClick={loadEntries}>Retry</button>
+      </div>
+    );
+  }
+
+  if (entries.length === 0) {
+    return (
+      <div style={{ textAlign: 'center', padding: '20px' }}>
+        <h1>Attendance Page</h1>
+        <p>No attendance entries yet</p>
+        <AttendanceForm onSubmit={addEntry} />
+      </div>
+    );
+  }
   return (
     <div style={{ textAlign: 'center', padding: '20px' }}>
       <h1>Attendance Page</h1>
-      {isLoading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>
-      && <button onClick={loadEntries}>Reload</button> }
       <AttendanceForm onSubmit={addEntry} />
       <AttendanceSummary entries={entries} />
-      <button onClick={() => addEntry('New Student', 'present')}>
-        Quick Add Present
-      </button>
       <br />
       <select value={status} style={{ margin: '20px 20px 20px 10px' }} onChange={(e) => setStatus(e.target.value as FilterStatus)}>
           <option value="all">All</option>
@@ -58,15 +80,12 @@ export default function AttendancePage() {
       </select>
 
       <ul>
-        {filteredEntries.length === 0 ? (
-          <p>No entries to display</p>
-        ) : (
-          filteredEntries.map((e) => (
-            <li key={e.id}>
-              <strong>{e.studentName}</strong> - {e.status}{" "}
-              <small>{new Date(e.recordedAt).toLocaleTimeString()}</small>
-          </li>
-        )))}
+        { filteredEntries.map((e) => (
+          <li key={e.id}>
+            <strong>{e.studentName}</strong> - {e.status}{" "}
+            <small>{new Date(e.recordedAt).toLocaleTimeString()}</small>
+        </li>
+        ))}
       </ul>
     </div>
   );
