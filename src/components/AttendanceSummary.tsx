@@ -14,11 +14,13 @@ export default function AttendanceSummary({ entries }: Props) {
     return (
         <div style={{ marginBottom: '20px' }}>
             <h2>Attendance Summary</h2>
-            <p>All: {allCount}</p>
-            <p>Present: {presentCount}</p>
-            <p>Absent: {absentCount}</p>
-            <p>Late: {lateCount}</p>
-            <p>Excused: {excusedCount}</p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '40px' }}>
+                <p>All: {allCount}</p>
+                <p>Present: {presentCount}</p>
+                <p>Absent: {absentCount}</p>
+                <p>Late: {lateCount}</p>
+                <p>Excused: {excusedCount}</p>
+            </div>
         </div>
     );
 }

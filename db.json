@@ -1,0 +1,40 @@
+{
+  "attendance": [
+    {
+      "id": "1",
+      "studentName": "John Doe",
+      "status": "present",
+      "recordedAt": "2026-03-05T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "studentName": "Jane Doe",
+      "status": "absent",
+      "recordedAt": "2026-03-05T11:00:00Z"
+    },
+    {
+      "id": "3",
+      "studentName": "Alice Smith",
+      "status": "present",
+      "recordedAt": "2026-03-05T12:00:00Z"
+    },
+    {
+      "id": "4",
+      "studentName": "Bob Johnson",
+      "status": "late",
+      "recordedAt": "2026-03-05T13:00:00Z"
+    },
+    {
+      "id": "5",
+      "studentName": "Charlie Brown",
+      "status": "present",
+      "recordedAt": "2026-03-05T14:00:00Z"
+    }, 
+    {
+      "id": "6",
+      "studentName": "Diana Prince",
+      "status": "excused",
+      "recordedAt": "2026-03-05T15:00:00Z"
+    }
+  ]
+}
