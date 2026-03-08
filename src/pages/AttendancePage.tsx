@@ -5,21 +5,21 @@ import AttendanceSummary from '../components/AttendanceSummary';
 import { attendanceApi } from '../api/attendanceApi';
 
 const nowIso = () => new Date().toISOString();
-const id = () => crypto.randomUUID();
 
 export default function AttendancePage() {
   const [entries, setEntries] = useState<AttendanceEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [createError, setCreateError] = useState<string | null>(null);
 
   const loadEntries = async () => {
     setIsLoading(true);
-    setError(null);
+    setLoadError(null);
     try {
       const data = await attendanceApi.listEntries();
       setEntries(data);
     } catch {
-      setError('An unexpected error occurred');
+      setLoadError('An unexpected error occurred');
     } finally { 
       setIsLoading(false);
       }
@@ -27,11 +27,14 @@ export default function AttendancePage() {
 
   useEffect(() => { loadEntries(); }, []);
 
-  const addEntry = (studentName: string, status: EntryStatus) => {
-    setEntries((prev) => [
-      { id: id(), studentName, status, recordedAt: nowIso() },
-      ...prev, 
-    ]);
+  const addEntry = async(studentName: string, status: EntryStatus) => {
+    setCreateError(null);
+    try {
+      const created = await attendanceApi.createEntry(studentName, status, nowIso());
+      setEntries((prev) => [created, ...prev]);
+    } catch {
+      setCreateError('Failed to create attendance entry');
+    }
   };
 
   const [status, setStatus] = useState<FilterStatus>('all');
@@ -46,11 +49,11 @@ export default function AttendancePage() {
     );
   }
 
-  if (error) {
+  if (loadError) {
     return (
       <div style={{ textAlign: 'center', padding: '20px' }}>
         <h1>Attendance Page</h1>
-        <p style={{ color: 'red' }}>{error}</p>
+        <p style={{ color: 'red' }}>{loadError}</p>
         <button onClick={loadEntries}>Retry</button>
       </div>
     );
@@ -62,6 +65,7 @@ export default function AttendancePage() {
         <h1>Attendance Page</h1>
         <p>No attendance entries yet</p>
         <AttendanceForm onSubmit={addEntry} />
+        {createError && <p style={{ color: 'red' }}>{createError}</p>}
       </div>
     );
   }
@@ -69,6 +73,7 @@ export default function AttendancePage() {
     <div style={{ textAlign: 'center', padding: '20px' }}>
       <h1>Attendance Page</h1>
       <AttendanceForm onSubmit={addEntry} />
+      {createError && <p style={{ color: 'red' }}>{createError}</p>}
       <AttendanceSummary entries={entries} />
       <br />
       <select value={status} style={{ margin: '20px 20px 20px 10px' }} onChange={(e) => setStatus(e.target.value as FilterStatus)}>

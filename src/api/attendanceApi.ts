@@ -1,4 +1,4 @@
-import type { AttendanceEntry } from '../types'; 
+import type { AttendanceEntry, EntryStatus } from '../types'; 
 
 export const attendanceApi = { 
     async listEntries(): Promise<AttendanceEntry[]> {
@@ -6,6 +6,20 @@ export const attendanceApi = {
         if (!response.ok) {
             throw new Error(`Failed to fetch attendance entries: ${response.status}`);
         }
-        return await response.json() as Promise<AttendanceEntry[]>;
+        return await response.json() as AttendanceEntry[];
+    }, 
+    async createEntry(studentName: string, status: EntryStatus, recordedAt: string): Promise<AttendanceEntry> {
+        
+        const response = await fetch('http://localhost:3001/attendance', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ studentName, status, recordedAt }),
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to create attendance entry: ${response.status}`);
+        }
+        return await response.json() as AttendanceEntry;
     }
 };

@@ -29,12 +29,19 @@
       "studentName": "Charlie Brown",
       "status": "present",
       "recordedAt": "2026-03-05T14:00:00Z"
-    }, 
+    },
     {
       "id": "6",
       "studentName": "Diana Prince",
       "status": "excused",
       "recordedAt": "2026-03-05T15:00:00Z"
+    },
+    {
+      "id": "ae9d",
+      "studentName": "Twiddle Dumb",
+      "status": "late",
+      "recordedAt": "2026-03-08T23:07:00.386Z"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
