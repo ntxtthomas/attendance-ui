@@ -2,7 +2,7 @@ import type { AttendanceEntry } from '../types';
 
 type Props = { 
     entries: AttendanceEntry[]; 
-    onDelete: (id: string) => Promise<void>;
+    onDelete: (id: string) => void;
 };
 
 export default function AttendanceList({ entries, onDelete }: Props) {

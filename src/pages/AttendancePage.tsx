@@ -97,8 +97,12 @@ export default function AttendancePage() {
           <option value="excused">Excused</option>
       </select>
       <h2>Attendance List</h2>
-      <AttendanceList entries={filteredEntries} onDelete={handleDelete} />
       {deleteError && <p style={{ color: 'red' }}>{deleteError}</p>}
+      {filteredEntries.length === 0 ? (
+      <p>No entries match this filter.</p>
+      ) : (
+      <AttendanceList entries={filteredEntries} onDelete={handleDelete} />
+      )}
     </div>
   );
 }
