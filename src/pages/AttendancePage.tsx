@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { AttendanceEntry, EntryStatus, FilterStatus } from '../types'; 
 import AttendanceForm from '../components/AttendanceForm';  
 import AttendanceSummary from '../components/AttendanceSummary';
+import AttendanceList from '../components/AttendanceList';
 import { attendanceApi } from '../api/attendanceApi';
 
 const nowIso = () => new Date().toISOString();
@@ -74,6 +75,7 @@ export default function AttendancePage() {
       <h1>Attendance Page</h1>
       <AttendanceForm onSubmit={addEntry} />
       {createError && <p style={{ color: 'red' }}>{createError}</p>}
+      <h2>Attendance Summary</h2>
       <AttendanceSummary entries={entries} />
       <br />
       <select value={filter} style={{ margin: '20px 20px 20px 10px' }} onChange={(e) => setFilter(e.target.value as FilterStatus)}>
@@ -83,15 +85,8 @@ export default function AttendancePage() {
           <option value="late">Late</option>
           <option value="excused">Excused</option>
       </select>
-
-      <ul>
-        { filteredEntries.map((e) => (
-          <li key={e.id}>
-            <strong>{e.studentName}</strong> - {e.status}{" "}
-            <small>{new Date(e.recordedAt).toLocaleTimeString()}</small>
-        </li>
-        ))}
-      </ul>
+      <h2>Attendance List</h2>
+      <AttendanceList entries={filteredEntries} />
     </div>
   );
 }
