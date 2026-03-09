@@ -21,5 +21,14 @@ export const attendanceApi = {
             throw new Error(`Failed to create attendance entry: ${response.status}`);
         }
         return await response.json() as AttendanceEntry;
+    }, 
+    async deleteEntry(id: string): Promise<void> {
+        const response = await fetch(`http://localhost:3001/attendance/${id}`, {
+            method: 'DELETE',
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to delete attendance entry: ${response.status}`);
+        }
+        return;
     }
 };
