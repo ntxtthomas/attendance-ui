@@ -37,8 +37,8 @@ export default function AttendancePage() {
     }
   };
 
-  const [status, setStatus] = useState<FilterStatus>('all');
-  const filteredEntries = entries.filter (e => status === 'all' || e.status === status);
+  const [filter, setFilter] = useState<FilterStatus>('all');
+  const filteredEntries = entries.filter (e => filter === 'all' || e.status === filter);
 
   if (isLoading) {
     return (
@@ -76,7 +76,7 @@ export default function AttendancePage() {
       {createError && <p style={{ color: 'red' }}>{createError}</p>}
       <AttendanceSummary entries={entries} />
       <br />
-      <select value={status} style={{ margin: '20px 20px 20px 10px' }} onChange={(e) => setStatus(e.target.value as FilterStatus)}>
+      <select value={filter} style={{ margin: '20px 20px 20px 10px' }} onChange={(e) => setFilter(e.target.value as FilterStatus)}>
           <option value="all">All</option>
           <option value="present">Present</option>
           <option value="absent">Absent</option>
