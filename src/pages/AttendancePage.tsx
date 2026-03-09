@@ -19,7 +19,7 @@ export default function AttendancePage() {
       const data = await attendanceApi.listEntries();
       setEntries(data);
     } catch {
-      setLoadError('An unexpected error occurred');
+      setLoadError('Failed to load attendance entries');
     } finally { 
       setIsLoading(false);
       }
