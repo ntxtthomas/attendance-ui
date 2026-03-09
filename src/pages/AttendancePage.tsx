@@ -12,6 +12,7 @@ export default function AttendancePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [createError, setCreateError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const loadEntries = async () => {
     setIsLoading(true);
@@ -35,6 +36,16 @@ export default function AttendancePage() {
       setEntries((prev) => [created, ...prev]);
     } catch {
       setCreateError('Failed to create attendance entry');
+    }
+  };
+
+  const handleDelete  = async(id: string) => {
+    setDeleteError(null);
+    try {
+      await attendanceApi.deleteEntry(id);
+      setEntries((prev) => prev.filter(e => e.id !== id));
+    } catch {
+      setDeleteError('Failed to delete attendance entry');
     }
   };
 
@@ -86,7 +97,12 @@ export default function AttendancePage() {
           <option value="excused">Excused</option>
       </select>
       <h2>Attendance List</h2>
-      <AttendanceList entries={filteredEntries} />
+      {deleteError && <p style={{ color: 'red' }}>{deleteError}</p>}
+      {filteredEntries.length === 0 ? (
+      <p>No entries match this filter.</p>
+      ) : (
+      <AttendanceList entries={filteredEntries} onDelete={handleDelete} />
+      )}
     </div>
   );
 }
