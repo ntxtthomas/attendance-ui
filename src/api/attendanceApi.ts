@@ -33,13 +33,13 @@ export const attendanceApi = {
         }
         return;
     },
-    async updateEntry(id: string, studentName: string, status: EntryStatus, recordedAt: string): Promise<AttendanceEntry> {
+    async updateEntry(id: string, updates: { studentName: string, status: EntryStatus, recordedAt: string }): Promise<AttendanceEntry> {
         const response = await fetch(`${BASE_URL}/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ studentName, status, recordedAt }),
+            body: JSON.stringify(updates),
         });
         if (!response.ok) {
             throw new Error(`Failed to update attendance entry: ${response.status}`);
