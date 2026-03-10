@@ -25,7 +25,7 @@ export default function AttendanceList({ entries, onDelete, onEdit, onCancel, ed
                 return (
                 <li key={e.id}>
                     <strong>{e.studentName}</strong> - {e.status}{" "}
-                    <small>{new Date(e.recordedAt).toLocaleTimeString()}</small>
+                    <small>{new Date(e.updatedAt ? e.updatedAt : e.recordedAt).toLocaleTimeString()}</small>
                     <button onClick={() => onDelete(e.id)}>Delete</button>
                     <button onClick={() => onEdit(e.id)}>Edit</button>
                 </li>

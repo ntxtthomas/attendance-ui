@@ -33,7 +33,7 @@ export const attendanceApi = {
         }
         return;
     },
-    async updateEntry(id: string, updates: { studentName: string, status: EntryStatus, recordedAt: string }): Promise<AttendanceEntry> {
+    async updateEntry(id: string, updates: { studentName: string, status: EntryStatus, recordedAt: string, updatedAt: string }): Promise<AttendanceEntry> {
         const response = await fetch(`${BASE_URL}/${id}`, {
             method: 'PUT',
             headers: {
