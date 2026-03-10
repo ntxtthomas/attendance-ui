@@ -13,6 +13,7 @@ export default function AttendancePage() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [createError, setCreateError] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const loadEntries = async () => {
     setIsLoading(true);
@@ -48,6 +49,14 @@ export default function AttendancePage() {
       setDeleteError('Failed to delete attendance entry');
     }
   };
+
+  const handleStartEdit = (id: string) => {
+    setEditingId(id);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+  }
 
   const [filter, setFilter] = useState<FilterStatus>('all');
   const filteredEntries = entries.filter (e => filter === 'all' || e.status === filter);
@@ -101,7 +110,12 @@ export default function AttendancePage() {
       {filteredEntries.length === 0 ? (
       <p>No entries match this filter.</p>
       ) : (
-      <AttendanceList entries={filteredEntries} onDelete={handleDelete} />
+      <AttendanceList 
+        entries={filteredEntries} 
+        onDelete={handleDelete} 
+        onEdit={handleStartEdit}
+        onCancel={handleCancelEdit} 
+        editingId={editingId} />
       )}
     </div>
   );
