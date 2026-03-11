@@ -68,7 +68,37 @@ export default function AttendancePage() {
 
   const handleCancelEdit = () => {
     setEditingId(null);
+    setEditStudentName(null);
+    setEditStatus(null);
+    setEditRecordedAt(null);
+    setUpdateError(null);
   }
+
+  const handleSaveEdit = async () => {
+    setUpdateError(null);
+    if (!editingId || !editStudentName || !editStatus || !editRecordedAt) {
+      setUpdateError('All fields are required');
+      return;
+    } else if (isNaN(Date.parse(editRecordedAt))) {
+      setUpdateError('Invalid date format');
+      return;
+    }
+    try {
+      const updated = await attendanceApi.updateEntry(editingId, {
+        studentName: editStudentName,
+        status: editStatus,
+        recordedAt: editRecordedAt,
+        updatedAt: nowIso(),
+      });
+      setEntries((prev) => prev.map(e => e.id === editingId ? updated : e));
+      setEditingId(null);
+      setEditStudentName(null);
+      setEditStatus(null);
+      setEditRecordedAt(null);
+    } catch {
+      setUpdateError('Failed to update attendance entry');
+    }
+  };
 
   const [filter, setFilter] = useState<FilterStatus>('all');
   const filteredEntries = entries.filter (e => filter === 'all' || e.status === filter);
@@ -119,6 +149,7 @@ export default function AttendancePage() {
       </select>
       <h2>Attendance List</h2>
       {deleteError && <p style={{ color: 'red' }}>{deleteError}</p>}
+      {updateError && <p style={{ color: 'red' }}>{updateError}</p>}
       {filteredEntries.length === 0 ? (
       <p>No entries match this filter.</p>
       ) : (
@@ -132,6 +163,7 @@ export default function AttendancePage() {
         editStatus={editStatus}
         onEditStudentNameChange={setEditStudentName}
         onEditStatusChange={setEditStatus}
+        onSaveEdit={handleSaveEdit}
        />
       )}
     </div>

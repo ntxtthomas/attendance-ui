@@ -10,6 +10,7 @@ type Props = {
     editStatus: EntryStatus | null;
     onEditStudentNameChange: (name: string) => void;
     onEditStatusChange: (status: EntryStatus) => void;
+    onSaveEdit: () => void;
 };
 
 export default function AttendanceList({ 
@@ -21,7 +22,8 @@ export default function AttendanceList({
     editStudentName, 
     editStatus,
     onEditStudentNameChange,
-    onEditStatusChange
+    onEditStatusChange,
+    onSaveEdit
 }: Props) {
 
     return (
@@ -42,6 +44,7 @@ export default function AttendanceList({
                                 <option value="excused">Excused</option>
                             </select>
                             <button onClick={onCancel}>Cancel</button>
+                            <button onClick={onSaveEdit}>Save</button>
                         </li>
                     );
                 }
