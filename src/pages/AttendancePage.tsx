@@ -14,6 +14,10 @@ export default function AttendancePage() {
   const [createError, setCreateError] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [editStudentName, setEditStudentName] = useState<string | null>(null);
+  const [editStatus, setEditStatus] = useState<EntryStatus | null>(null);
+  const [editRecordedAt, setEditRecordedAt] = useState<string | null>(null);
+  const [updateError, setUpdateError] = useState<string | null>(null);
 
   const loadEntries = async () => {
     setIsLoading(true);
@@ -51,7 +55,15 @@ export default function AttendancePage() {
   };
 
   const handleStartEdit = (id: string) => {
+    setUpdateError(null);
     setEditingId(id);
+    const entry = entries.find(e => e.id === id);
+    if (entry) {
+      setEditStudentName(entry.studentName);
+      setEditStatus(entry.status);
+      setEditRecordedAt(entry.recordedAt);
+      setUpdateError(null);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -115,7 +127,12 @@ export default function AttendancePage() {
         onDelete={handleDelete} 
         onEdit={handleStartEdit}
         onCancel={handleCancelEdit} 
-        editingId={editingId} />
+        editingId={editingId}
+        editStudentName={editStudentName}
+        editStatus={editStatus}
+        onEditStudentNameChange={setEditStudentName}
+        onEditStatusChange={setEditStatus}
+       />
       )}
     </div>
   );
