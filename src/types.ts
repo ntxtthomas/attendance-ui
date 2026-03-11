@@ -6,4 +6,5 @@ export interface AttendanceEntry {
   studentName: string;
   status: EntryStatus;
   recordedAt: string;
+  updatedAt?: string;
 }

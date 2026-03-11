@@ -32,5 +32,18 @@ export const attendanceApi = {
             throw new Error(`Failed to delete attendance entry: ${response.status}`);
         }
         return;
+    },
+    async updateEntry(id: string, updates: { studentName: string, status: EntryStatus, recordedAt: string, updatedAt: string }): Promise<AttendanceEntry> {
+        const response = await fetch(`${BASE_URL}/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updates),
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to update attendance entry: ${response.status}`);
+        }
+        return await response.json() as AttendanceEntry;
     }
 };
