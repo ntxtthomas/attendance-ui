@@ -1,0 +1,1 @@
+// renders entries, delete callback, edit-mode row
