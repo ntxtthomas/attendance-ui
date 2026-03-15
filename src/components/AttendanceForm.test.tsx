@@ -10,10 +10,10 @@ import AttendanceForm from './AttendanceForm';
 describe('AttendanceForm', () => {
   it('shows validation error when name is blank', () => {
     const onSubmit = vi.fn();
+
     render(<AttendanceForm onSubmit={onSubmit} />);
-
+    fireEvent.change(screen.getByPlaceholderText('Student Name'), { target: { value: '   ' } });
     fireEvent.click(screen.getByText('Add Attendance'));
-
     expect(screen.getByText('Student name is required')).toBeInTheDocument();
     expect(onSubmit).not.toHaveBeenCalled();
   });
@@ -22,7 +22,7 @@ describe('AttendanceForm', () => {
     const onSubmit = vi.fn();
     render(<AttendanceForm onSubmit={onSubmit} />);
 
-    fireEvent.change(screen.getByPlaceholderText('Student Name'), { target: { value: '    ' } });
+    fireEvent.change(screen.getByPlaceholderText('Student Name'), { target: { value: ' Alice ' } });
     fireEvent.click(screen.getByText('Add Attendance'));
 
     expect(onSubmit).toHaveBeenCalledWith('Alice', 'present');
