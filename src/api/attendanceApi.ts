@@ -1,10 +1,21 @@
 import type { AttendanceEntry, EntryStatus } from '../types'; 
 
-const BASE_URL = 'http://localhost:3001/attendance';
+const BASE_URL = 'http://localhost:3001/api/v1/attendance_entries';
+const getToken = () => localStorage.getItem('token');
+const buildHeaders = (includeJson = false): Record<string, string> => {
+    const headers: Record<string, string> = includeJson ? { 'Content-Type': 'application/json' } : {};
+    const token = getToken();
+    if (token) {
+        headers.Authorization = `Bearer ${token}`;
+    }
+    return headers;
+}
 
 export const attendanceApi = { 
     async listEntries(): Promise<AttendanceEntry[]> {
-        const response = await fetch(BASE_URL);
+        const response = await fetch(BASE_URL, {
+            headers: buildHeaders(),
+        });
         if (!response.ok) {
             throw new Error(`Failed to fetch attendance entries: ${response.status}`);
         }
@@ -14,10 +25,7 @@ export const attendanceApi = {
         
         const response = await fetch(BASE_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ studentName, status, recordedAt }),
+            headers: buildHeaders(true),            body: JSON.stringify({ studentName, status, recordedAt }),
         });
         if (!response.ok) {
             throw new Error(`Failed to create attendance entry: ${response.status}`);
@@ -27,6 +35,7 @@ export const attendanceApi = {
     async deleteEntry(id: string): Promise<void> {
         const response = await fetch(`${BASE_URL}/${id}`, {
             method: 'DELETE',
+            headers: buildHeaders(),
         });
         if (!response.ok) {
             throw new Error(`Failed to delete attendance entry: ${response.status}`);
@@ -36,9 +45,7 @@ export const attendanceApi = {
     async updateEntry(id: string, updates: { studentName: string, status: EntryStatus, recordedAt: string, updatedAt: string }): Promise<AttendanceEntry> {
         const response = await fetch(`${BASE_URL}/${id}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: buildHeaders(true),
             body: JSON.stringify(updates),
         });
         if (!response.ok) {
