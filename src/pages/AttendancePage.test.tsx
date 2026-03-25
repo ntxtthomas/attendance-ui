@@ -49,7 +49,7 @@ describe('AttendancePage', () => {
 
         render(<AttendancePage />);
 
-        expect(await screen.findByText('Failed to load attendance entries')).toBeInTheDocument();
+        expect(await screen.findByText(/Failed to load attendance entries/i)).toBeInTheDocument();
     });
 
     it('shows retry option on load failure and reloads data on retry', async () => {
@@ -61,7 +61,7 @@ describe('AttendancePage', () => {
 
         render(<AttendancePage />);
 
-        expect(await screen.findByText('Failed to load attendance entries')).toBeInTheDocument();
+        expect(await screen.findByText(/Failed to load attendance entries/i)).toBeInTheDocument();
         const retryButton = screen.getByText(/Retry/);
         expect(retryButton).toBeInTheDocument();
 
@@ -79,7 +79,7 @@ describe('AttendancePage', () => {
         const addButton = await screen.findByRole('button', { name: /Add Attendance/i });
 
         fireEvent.change(screen.getByPlaceholderText('Student Name'), { target: { value: 'Charlie' } });
-        fireEvent.change(screen.getByRole('combobox'), { target: { value: 'late' } });
+        fireEvent.change(screen.getAllByRole('combobox')[0], { target: { value: 'late' } });
         fireEvent.click(addButton);
 
         expect(await screen.findByText('Charlie')).toBeInTheDocument();

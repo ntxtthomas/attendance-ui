@@ -25,8 +25,9 @@ export default function AttendancePage() {
     try {
       const data = await attendanceApi.listEntries();
       setEntries(data);
-    } catch {
-      setLoadError('Failed to load attendance entries');
+    } catch (error) {
+      const details = error instanceof Error ? error.message : null;
+      setLoadError(details ? `Failed to load attendance entries: ${details}` : 'Failed to load attendance entries');
     } finally { 
       setIsLoading(false);
       }
@@ -39,8 +40,9 @@ export default function AttendancePage() {
     try {
       const created = await attendanceApi.createEntry(studentName, status, nowIso());
       setEntries((prev) => [created, ...prev]);
-    } catch {
-      setCreateError('Failed to create attendance entry');
+    } catch (error) {
+      const details = error instanceof Error ? error.message : null;
+      setCreateError(details ? `Failed to create attendance entry: ${details}` : 'Failed to create attendance entry');
     }
   };
 
@@ -49,8 +51,9 @@ export default function AttendancePage() {
     try {
       await attendanceApi.deleteEntry(id);
       setEntries((prev) => prev.filter(e => e.id !== id));
-    } catch {
-      setDeleteError('Failed to delete attendance entry');
+    } catch (error) {
+      const details = error instanceof Error ? error.message : null;
+      setDeleteError(details ? `Failed to delete attendance entry: ${details}` : 'Failed to delete attendance entry');
     }
   };
 
@@ -95,8 +98,9 @@ export default function AttendancePage() {
       setEditStudentName(null);
       setEditStatus(null);
       setEditRecordedAt(null);
-    } catch {
-      setUpdateError('Failed to update attendance entry');
+    } catch (error) {
+      const details = error instanceof Error ? error.message : null;
+      setUpdateError(details ? `Failed to update attendance entry: ${details}` : 'Failed to update attendance entry');
     }
   };
 
