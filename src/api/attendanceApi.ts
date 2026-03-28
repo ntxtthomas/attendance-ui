@@ -60,6 +60,9 @@ const parseListResponse = (payload: unknown): AttendanceEntry[] => {
     }
     if (payload && typeof payload === 'object') {
         const objectPayload = payload as Record<string, unknown>;
+        if (Array.isArray(objectPayload.entries)) {
+            return objectPayload.entries.map(item => fromApiEntry(item as RailsAttendanceEntry));
+        }
         if (Array.isArray(objectPayload.attendance_entries)) {
             return objectPayload.attendance_entries.map(item => fromApiEntry(item as RailsAttendanceEntry));
         }
