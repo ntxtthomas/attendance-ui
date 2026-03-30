@@ -1,10 +1,3 @@
-// renders entries, delete callback, edit-mode row
-
-// higher-value page tests: load error + retry, create 
-// success, delete success, filtered-empty message, 
-// save/update success
-
-
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import AttendanceList from './AttendanceList';

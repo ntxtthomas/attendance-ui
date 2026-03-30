@@ -1,10 +1,12 @@
 import './App.css'
-import AttendancePage from './pages/AttendancePage'
+import SignInPage from './pages/SignInPage'
+
+
 
 function App() {
 
   return (
-    <AttendancePage />
+    <SignInPage />
   )
 }
 
