@@ -1,6 +1,8 @@
 import type { AttendanceEntry, EntryStatus } from '../types'; 
 
-const BASE_URL = 'http://localhost:3001/api/v1/attendance_entries';
+const BASE_URL = 'http://localhost:3001';
+const API_V1 = BASE_URL + '/api/v1';
+const ATTENDANCE_URL = API_V1 + '/attendance_entries';
 
 const TOKEN_KEY = 'token';
 
@@ -123,9 +125,63 @@ const buildApiError = async (action: string, response: Response): Promise<Error>
     return new Error(`Failed to ${action}: ${status}`);
 };
 
+
+
 export const attendanceApi = { 
+    async signIn(email: string, password: string): Promise<{ token?: string; error?: string }> {
+        const response = await fetch(`${BASE_URL}/users/sign_in`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+        });
+        if (!response.ok) {
+            const details = await getResponseErrorDetails(response);
+            throw new Error(details ? `Sign in failed: ${details}` : 'Sign in failed');
+        }
+        const payload = await response.json() as unknown;
+        if (payload && typeof payload === 'object') {
+            const p = payload as Record<string, unknown>;
+            if (typeof p.token === 'string') {
+                return { token: p.token };
+            }
+        }
+        return { error: 'Sign in succeeded but no token was returned by the API.' };
+    },
+
+    async me(): Promise<{ email: string }> {
+        const response = await fetch(`${API_V1}/me`, {  
+            headers: buildHeaders(),
+        });
+        if (!response.ok) {
+            throw await buildApiError('fetch current user info', response);
+        }
+        const payload = await response.json() as unknown;
+        if (payload && typeof payload === 'object') {
+            const p = payload as Record<string, unknown>;
+            if (p.user && typeof p.user === 'object') {
+                const user = p.user as Record<string, unknown>;
+                if (typeof user.email === 'string') {
+                    return { email: user.email };
+                }
+            }
+        }
+        throw new Error('API returned an invalid payload for current user info.'); 
+    },
+
+    async signOut(): Promise<void> {
+        const response = await fetch(`${BASE_URL}/users/sign_out`, {
+            method: 'DELETE',
+            headers: buildHeaders(),
+        });
+        if (!response.ok) {
+            throw await buildApiError('sign out', response);
+        }
+        return;
+    },
+
     async listEntries(): Promise<AttendanceEntry[]> {
-        const response = await fetch(BASE_URL, {
+        const response = await fetch(ATTENDANCE_URL, {
+            method: 'GET',
             headers: buildHeaders(),
         });
         if (!response.ok) {
@@ -134,9 +190,10 @@ export const attendanceApi = {
         const payload = await response.json() as unknown;
         return parseListResponse(payload);
     }, 
+
     async createEntry(studentName: string, status: EntryStatus, recordedAt: string): Promise<AttendanceEntry> {
         const railsPayload = toRailsPayload({ studentName, status, recordedAt });
-        const response = await fetch(BASE_URL, {
+        const response = await fetch(ATTENDANCE_URL, {
             method: 'POST',
             headers: buildHeaders(true),
             body: JSON.stringify({
@@ -150,19 +207,10 @@ export const attendanceApi = {
         const payload = await response.json() as unknown;
         return parseEntryResponse(payload);
     }, 
-    async deleteEntry(id: string): Promise<void> {
-        const response = await fetch(`${BASE_URL}/${id}`, {
-            method: 'DELETE',
-            headers: buildHeaders(),
-        });
-        if (!response.ok) {
-            throw await buildApiError('delete attendance entry', response);
-        }
-        return;
-    },
+
     async updateEntry(id: string, updates: { studentName: string, status: EntryStatus, recordedAt: string, updatedAt: string }): Promise<AttendanceEntry> {
         const railsPayload = toRailsPayload(updates);
-        const response = await fetch(`${BASE_URL}/${id}`, {
+        const response = await fetch(`${ATTENDANCE_URL}/${id}`, {
             method: 'PUT',
             headers: buildHeaders(true),
             body: JSON.stringify({
@@ -175,5 +223,16 @@ export const attendanceApi = {
         }
         const payload = await response.json() as unknown;
         return parseEntryResponse(payload);
+    },
+
+    async deleteEntry(id: string): Promise<void> {
+        const response = await fetch(`${ATTENDANCE_URL}/${id}`, {
+            method: 'DELETE',
+            headers: buildHeaders(),
+        });
+        if (!response.ok) {
+            throw await buildApiError('delete attendance entry', response);
+        }
+        return;
     }
 };
