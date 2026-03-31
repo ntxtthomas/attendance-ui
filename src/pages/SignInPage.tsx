@@ -1,12 +1,16 @@
 import { useState, useRef } from 'react';
 import { attendanceApi, authToken } from '../api/attendanceApi';
 
-export default function SignInPage() {
+type Props = {
+    onSignInSuccess: () => void;
+};
+
+export default function SignInPage({ onSignInSuccess }: Props) {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const isSubmitting = useRef(false);
-
+    
     const onsubmit = (email: string, password: string) => {
         if (isSubmitting.current) return; // prevent multiple submissions
         isSubmitting.current = true;
@@ -16,6 +20,7 @@ export default function SignInPage() {
             .then(response => {
                 if (response.token) {
                     authToken.set(response.token);
+                    onSignInSuccess();
                 } else {
                     alert('Sign in failed: ' + (response.error || 'Unknown error'));
                 }
@@ -28,7 +33,6 @@ export default function SignInPage() {
                 isSubmitting.current = false; // reset submission state
             });
     };
-
 
     return (
         <form onSubmit={(e) => { e.preventDefault(); onsubmit(email, password); }}>

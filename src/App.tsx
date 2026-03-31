@@ -1,13 +1,35 @@
-import './App.css'
-import SignInPage from './pages/SignInPage'
+import { useState, useEffect } from 'react';
+import { attendanceApi, authToken } from './api/attendanceApi';
+import './App.css';
+import SignInPage from './pages/SignInPage';
+import AttendancePage from './pages/AttendancePage';
 
-
+type AuthStatus = 'checking' | 'signedOut' | 'signedIn';
 
 function App() {
+  const [authStatus, setAuthStatus] = useState<AuthStatus>('checking');
 
-  return (
-    <SignInPage />
-  )
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (!authToken.get()) {
+        setAuthStatus('signedOut');
+        return;
+      }
+      try {
+        await attendanceApi.me();
+        setAuthStatus('signedIn');
+      } catch {
+        authToken.clear();
+        setAuthStatus('signedOut');
+      }
+    };
+    checkAuth();
+  }, []);
+
+  if (authStatus === 'checking') return <p>Loading...</p>;
+  if (authStatus === 'signedOut') return <SignInPage onSignInSuccess={() => setAuthStatus('signedIn')} />;
+
+  return <AttendancePage />;
 }
 
-export default App
+export default App;

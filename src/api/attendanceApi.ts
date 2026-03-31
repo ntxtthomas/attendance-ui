@@ -139,22 +139,31 @@ export const attendanceApi = {
             throw new Error(details ? `Sign in failed: ${details}` : 'Sign in failed');
         }
         const payload = await response.json() as unknown;
-        if (payload && typeof payload === 'object' && typeof payload.token === 'string') {
-            return { token: payload.token };
+        if (payload && typeof payload === 'object') {
+            const p = payload as Record<string, unknown>;
+            if (typeof p.token === 'string') {
+                return { token: p.token };
+            }
         }
         return { error: 'Sign in succeeded but no token was returned by the API.' };
     },
 
     async me(): Promise<{ email: string }> {
-        const response = await fetch(`${API_V1}me`, {  
+        const response = await fetch(`${API_V1}/me`, {  
             headers: buildHeaders(),
         });
         if (!response.ok) {
             throw await buildApiError('fetch current user info', response);
         }
         const payload = await response.json() as unknown;
-        if (payload && typeof payload === 'object' && typeof payload.user.email === 'string') {
-            return { email: payload.user.email };
+        if (payload && typeof payload === 'object') {
+            const p = payload as Record<string, unknown>;
+            if (p.user && typeof p.user === 'object') {
+                const user = p.user as Record<string, unknown>;
+                if (typeof user.email === 'string') {
+                    return { email: user.email };
+                }
+            }
         }
         throw new Error('API returned an invalid payload for current user info.'); 
     },
