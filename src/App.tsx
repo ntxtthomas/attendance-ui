@@ -9,6 +9,16 @@ type AuthStatus = 'checking' | 'signedOut' | 'signedIn';
 function App() {
   const [authStatus, setAuthStatus] = useState<AuthStatus>('checking');
 
+  const handleSignOut = async () => {
+    try {
+      await attendanceApi.signOut();
+    } catch {
+    } finally {
+      authToken.clear();
+      setAuthStatus('signedOut');
+    }
+  };
+
   useEffect(() => {
     const checkAuth = async () => {
       if (!authToken.get()) {
@@ -29,7 +39,11 @@ function App() {
   if (authStatus === 'checking') return <p>Loading...</p>;
   if (authStatus === 'signedOut') return <SignInPage onSignInSuccess={() => setAuthStatus('signedIn')} />;
 
-  return <AttendancePage />;
+  return (
+    <>
+      <AttendancePage onSignOut={handleSignOut} />
+    </>
+  );
 }
 
 export default App;
