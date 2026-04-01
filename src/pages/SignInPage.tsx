@@ -12,10 +12,9 @@ export default function SignInPage({ onSignInSuccess }: Props) {
     const isSubmitting = useRef(false);
     
     const onsubmit = (email: string, password: string) => {
-        if (isSubmitting.current) return; // prevent multiple submissions
+        if (isSubmitting.current) return;
         isSubmitting.current = true;
 
-        // call api to sign in, if successful, set token and redirect to attendance page
         attendanceApi.signIn(email, password)
             .then(response => {
                 if (response.token) {

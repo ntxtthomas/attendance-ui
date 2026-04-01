@@ -6,8 +6,10 @@ import AttendanceList from '../components/AttendanceList';
 import { attendanceApi } from '../api/attendanceApi';
 
 const nowIso = () => new Date().toISOString();
-
-export default function AttendancePage() {
+type Props = {
+    onSignOut: () => void;
+};
+export default function AttendancePage({ onSignOut }: Props ) {
   const [entries, setEntries] = useState<AttendanceEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -138,6 +140,9 @@ export default function AttendancePage() {
   }
   return (
     <div style={{ textAlign: 'center', padding: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px' }}>
+        <button onClick={onSignOut}>Sign Out</button>
+      </div>
       <h1>Attendance Page</h1>
       <AttendanceForm onSubmit={addEntry} />
       {createError && <p style={{ color: 'red' }}>{createError}</p>}
