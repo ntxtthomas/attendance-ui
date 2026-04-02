@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { attendanceApi } from "../attendanceApi";
-import type { AttendanceEntry, EntryStatus } from "../../types";
+import { attendanceApi } from "../api/attendanceApi";
+import type { AttendanceEntry, EntryStatus } from "../types";
 
 type UpdateInput = {
     studentName: string;
