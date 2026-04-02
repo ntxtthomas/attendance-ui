@@ -65,6 +65,7 @@ export function useAttendanceEntries() {
             try {
                 const updated = await attendanceApi.updateEntry(id, input);
                 setEntries((prev) => prev.map(e => e.id === id ? updated : e));
+                return updated;
             } catch (err) {
                 const message = toErrorMessage(err);
                 setError(message);
