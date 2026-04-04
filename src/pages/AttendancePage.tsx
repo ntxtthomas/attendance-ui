@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import type { AttendanceEntry, EntryStatus, FilterStatus } from '../types'; 
+import { useState } from 'react';
+import type { EntryStatus, FilterStatus } from '../types'; 
 import AttendanceForm from '../components/AttendanceForm';  
 import AttendanceSummary from '../components/AttendanceSummary';
 import AttendanceList from '../components/AttendanceList';
@@ -101,7 +101,7 @@ export default function AttendancePage({ onSignOut }: Props ) {
     return (
       <div style={{ textAlign: 'center', padding: '20px' }}>
         <h1>Attendance Page</h1>
-        <p style={{ color: 'red' }}>{loadError}</p>
+        <p style={{ color: 'red' }}>Failed to load attendance entries: {loadError}</p>
         <button onClick={reload}>Retry</button>
       </div>
     );

@@ -42,15 +42,10 @@ export function useAttendanceEntries() {
             recordedAt: string
         ) => {
             setIsSaving(true);
-            setError(null);
             try {
                 const created = await attendanceApi.createEntry(studentName, status, recordedAt);
                 setEntries((prev) => [created, ...prev]);
                 return created;
-            } catch (err) {
-                const message = toErrorMessage(err);
-                setError(message);
-                throw err;
             } finally {
                 setIsSaving(false);
             }
@@ -61,15 +56,10 @@ export function useAttendanceEntries() {
     const updateEntry = useCallback(
         async (id: string, input: UpdateInput) => {
             setIsSaving(true);
-            setError(null);
             try {
                 const updated = await attendanceApi.updateEntry(id, input);
                 setEntries((prev) => prev.map(e => e.id === id ? updated : e));
                 return updated;
-            } catch (err) {
-                const message = toErrorMessage(err);
-                setError(message);
-                throw err;
             } finally {
                 setIsSaving(false);
             }
@@ -80,14 +70,9 @@ export function useAttendanceEntries() {
     const deleteEntry = useCallback(
         async (id: string) => {
             setIsSaving(true);
-            setError(null);
             try {
                 await attendanceApi.deleteEntry(id);
                 setEntries((prev) => prev.filter(e => e.id !== id));
-            } catch (err) {
-                const message = toErrorMessage(err);
-                setError(message);
-                throw err;
             } finally {
                 setIsSaving(false);
             }
@@ -105,4 +90,4 @@ export function useAttendanceEntries() {
         updateEntry,
         deleteEntry,
     };
-};
+}
