@@ -3,16 +3,14 @@ import type { AttendanceEntry, EntryStatus, FilterStatus } from '../types';
 import AttendanceForm from '../components/AttendanceForm';  
 import AttendanceSummary from '../components/AttendanceSummary';
 import AttendanceList from '../components/AttendanceList';
-import { attendanceApi } from '../api/attendanceApi';
+import { useAttendanceEntries } from '../hooks/useAttendanceEntries';
 
 const nowIso = () => new Date().toISOString();
 type Props = {
     onSignOut: () => void;
 };
 export default function AttendancePage({ onSignOut }: Props ) {
-  const [entries, setEntries] = useState<AttendanceEntry[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const { entries, isLoading, error: loadError, reload, createEntry, updateEntry, deleteEntry } = useAttendanceEntries();
   const [createError, setCreateError] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -21,27 +19,10 @@ export default function AttendancePage({ onSignOut }: Props ) {
   const [editRecordedAt, setEditRecordedAt] = useState<string | null>(null);
   const [updateError, setUpdateError] = useState<string | null>(null);
 
-  const loadEntries = async () => {
-    setIsLoading(true);
-    setLoadError(null);
-    try {
-      const data = await attendanceApi.listEntries();
-      setEntries(data);
-    } catch (error) {
-      const details = error instanceof Error ? error.message : null;
-      setLoadError(details ? `Failed to load attendance entries: ${details}` : 'Failed to load attendance entries');
-    } finally { 
-      setIsLoading(false);
-      }
-  };
-
-  useEffect(() => { loadEntries(); }, []);
-
   const addEntry = async(studentName: string, status: EntryStatus) => {
     setCreateError(null);
     try {
-      const created = await attendanceApi.createEntry(studentName, status, nowIso());
-      setEntries((prev) => [created, ...prev]);
+        await createEntry(studentName, status, nowIso());
     } catch (error) {
       const details = error instanceof Error ? error.message : null;
       setCreateError(details ? `Failed to create attendance entry: ${details}` : 'Failed to create attendance entry');
@@ -51,8 +32,7 @@ export default function AttendancePage({ onSignOut }: Props ) {
   const handleDelete  = async(id: string) => {
     setDeleteError(null);
     try {
-      await attendanceApi.deleteEntry(id);
-      setEntries((prev) => prev.filter(e => e.id !== id));
+        await deleteEntry(id);
     } catch (error) {
       const details = error instanceof Error ? error.message : null;
       setDeleteError(details ? `Failed to delete attendance entry: ${details}` : 'Failed to delete attendance entry');
@@ -89,13 +69,12 @@ export default function AttendancePage({ onSignOut }: Props ) {
       return;
     }
     try {
-      const updated = await attendanceApi.updateEntry(editingId, {
+      await updateEntry(editingId, {
         studentName: editStudentName,
         status: editStatus,
         recordedAt: editRecordedAt,
         updatedAt: nowIso(),
       });
-      setEntries((prev) => prev.map(e => e.id === editingId ? updated : e));
       setEditingId(null);
       setEditStudentName(null);
       setEditStatus(null);
@@ -123,7 +102,7 @@ export default function AttendancePage({ onSignOut }: Props ) {
       <div style={{ textAlign: 'center', padding: '20px' }}>
         <h1>Attendance Page</h1>
         <p style={{ color: 'red' }}>{loadError}</p>
-        <button onClick={loadEntries}>Retry</button>
+        <button onClick={reload}>Retry</button>
       </div>
     );
   }
