@@ -6,9 +6,7 @@ import type { AttendanceEntry } from '../types';
 describe('AttendanceList', () => {
 
   const baseProps = {
-    editingId: null,
-    editStudentName: '',
-    editStatus: null,
+    editDraft: null,
     onEditStudentNameChange: () => {},
     onEditStatusChange: () => {},
     onEdit: () => {},
@@ -55,12 +53,12 @@ describe('AttendanceList', () => {
       <AttendanceList 
         entries={entries}
         {...baseProps}
-        editingId="1"
-        editStudentName="Alice"
-        editStatus="present"
-        onEditStudentNameChange={() => {}}
-        onEditStatusChange={() => {}}
-        onSaveEdit={() => {}}
+        editDraft={{ 
+          id: '1', 
+          studentName: 'Alice', 
+          status: 'present', 
+          recordedAt: '2024-01-01T08:00:00Z' 
+        }}
       />
     );
 

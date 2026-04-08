@@ -1,22 +1,28 @@
 import { useState } from 'react';
-import type { EntryStatus, FilterStatus } from '../types'; 
+import type { AttendanceEntry, EntryStatus, FilterStatus } from '../types'; 
 import AttendanceForm from '../components/AttendanceForm';  
 import AttendanceSummary from '../components/AttendanceSummary';
 import AttendanceList from '../components/AttendanceList';
 import { useAttendanceEntries } from '../hooks/useAttendanceEntries';
 
 const nowIso = () => new Date().toISOString();
+
 type Props = {
     onSignOut: () => void;
 };
+
+type EditDraft = {
+    id: string;
+    studentName: string;
+    status: EntryStatus;
+    recordedAt: string;
+};
+
 export default function AttendancePage({ onSignOut }: Props ) {
+  const [editDraft, setEditDraft] = useState<EditDraft | null>(null);
   const { entries, isLoading, error: loadError, reload, createEntry, updateEntry, deleteEntry } = useAttendanceEntries();
   const [createError, setCreateError] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editStudentName, setEditStudentName] = useState<string | null>(null);
-  const [editStatus, setEditStatus] = useState<EntryStatus | null>(null);
-  const [editRecordedAt, setEditRecordedAt] = useState<string | null>(null);
   const [updateError, setUpdateError] = useState<string | null>(null);
 
   const addEntry = async(studentName: string, status: EntryStatus) => {
@@ -39,46 +45,41 @@ export default function AttendancePage({ onSignOut }: Props ) {
     }
   };
 
-  const handleStartEdit = (id: string) => {
+  const handleStartEdit = (entry: AttendanceEntry) => {
     setUpdateError(null);
-    setEditingId(id);
-    const entry = entries.find(e => e.id === id);
-    if (entry) {
-      setEditStudentName(entry.studentName);
-      setEditStatus(entry.status);
-      setEditRecordedAt(entry.recordedAt);
-      setUpdateError(null);
-    }
+    setEditDraft({
+      id: entry.id,
+      studentName: entry.studentName,
+      status: entry.status,
+      recordedAt: entry.recordedAt,
+    });
   };
 
   const handleCancelEdit = () => {
-    setEditingId(null);
-    setEditStudentName(null);
-    setEditStatus(null);
-    setEditRecordedAt(null);
+    setEditDraft(null);
     setUpdateError(null);
   }
 
   const handleSaveEdit = async () => {
     setUpdateError(null);
-    if (!editingId || !editStudentName || !editStatus || !editRecordedAt) {
+    if (!editDraft || !editDraft.studentName || !editDraft.status || !editDraft.recordedAt) {
       setUpdateError('All fields are required');
       return;
-    } else if (isNaN(Date.parse(editRecordedAt))) {
+    } 
+    if (isNaN(Date.parse(editDraft.recordedAt))) {
       setUpdateError('Invalid date format');
       return;
     }
+    
     try {
-      await updateEntry(editingId, {
-        studentName: editStudentName,
-        status: editStatus,
-        recordedAt: editRecordedAt,
+      await updateEntry(editDraft.id, {
+        studentName: editDraft.studentName,
+        status: editDraft.status,
+        recordedAt: editDraft.recordedAt,
         updatedAt: nowIso(),
       });
-      setEditingId(null);
-      setEditStudentName(null);
-      setEditStatus(null);
-      setEditRecordedAt(null);
+      
+      setEditDraft(null);
     } catch (error) {
       const details = error instanceof Error ? error.message : null;
       setUpdateError(details ? `Failed to update attendance entry: ${details}` : 'Failed to update attendance entry');
@@ -146,11 +147,9 @@ export default function AttendancePage({ onSignOut }: Props ) {
         onDelete={handleDelete} 
         onEdit={handleStartEdit}
         onCancel={handleCancelEdit} 
-        editingId={editingId}
-        editStudentName={editStudentName}
-        editStatus={editStatus}
-        onEditStudentNameChange={setEditStudentName}
-        onEditStatusChange={setEditStatus}
+        editDraft={editDraft}
+        onEditStudentNameChange={(value) => setEditDraft((prev) => prev ? { ...prev, studentName: value } : prev)}
+        onEditStatusChange={(value) => setEditDraft((prev) => prev ? { ...prev, status: value } : prev)}
         onSaveEdit={handleSaveEdit}
        />
       )}
